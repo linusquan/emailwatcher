@@ -46,6 +46,7 @@ There is **no** custom app runtime, database, or message queue in-repo. Persiste
 |---|---|
 | Config | Always from repo files — never baked automation defaults |
 | Ingress | Only listed inboxes; only messages inside `timerange` |
+| Pre-filter | Bounces / non-delivery / auto-replies discarded before classification; never deep-read, never written |
 | Classification | Must complete before any Notion write |
 | Egress | Only `USEFUL` → Notion; PROMOTIONAL / LOW_VALUE / UNCERTAIN → no write |
 | Targets | Only Notion pages with `email inject` marker |
@@ -58,11 +59,12 @@ There is **no** custom app runtime, database, or message queue in-repo. Persiste
 
 1. **Load** — README → config → Emailer-Agent rules.
 2. **Fetch** — per inbox, messages in lookback window (full body when possibly useful).
-3. **Classify** — quality gate labels each message.
-4. **Enrich** — for USEFUL: attachments, thread context where required (e.g. property/maintenance).
-5. **Route** — discover `email inject` targets; pick best strong match or skip.
-6. **Integrate** — dedupe, prefer newest authoritative values, record light provenance.
-7. **Report** — completion report per Emailer-Agent §15.
+3. **Pre-filter** — discard bounces/non-delivery and out-of-office auto-replies before classification (metadata only, no full-body fetch, never written to Notion).
+4. **Classify** — quality gate labels each remaining message.
+5. **Enrich** — for USEFUL: attachments, thread context where required (e.g. property/maintenance).
+6. **Route** — discover `email inject` targets; pick best strong match or skip.
+7. **Integrate** — dedupe, prefer newest authoritative values, record light provenance.
+8. **Report** — completion report per Emailer-Agent §17.
 
 Detail: [pipeline.md](./pipeline.md) and [processing-pipeline.excalidraw](./diagrams/processing-pipeline.excalidraw).
 

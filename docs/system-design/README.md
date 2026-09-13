@@ -14,7 +14,7 @@ Living system design for EmailWatcher. Keep diagrams (Excalidraw) and prose (Mar
 | [Architecture overview](./architecture.md) | Components, trust boundaries, data stores, constraints |
 | [Processing pipeline](./pipeline.md) | End-to-end run steps, quality gate, Notion write path |
 | [diagrams/system-context.excalidraw](./diagrams/system-context.excalidraw) | Actors ↔ EmailWatcher ↔ Gmail / Outlook / Notion / Cursor |
-| [diagrams/processing-pipeline.excalidraw](./diagrams/processing-pipeline.excalidraw) | Fetch → classify → route → integrate → report |
+| [diagrams/processing-pipeline.excalidraw](./diagrams/processing-pipeline.excalidraw) | Fetch → pre-filter → classify → route → integrate → report |
 | [diagrams/quality-gate.excalidraw](./diagrams/quality-gate.excalidraw) | USEFUL / PROMOTIONAL / LOW_VALUE / UNCERTAIN decisions |
 | [diagrams/notion-routing.excalidraw](./diagrams/notion-routing.excalidraw) | `email inject` discovery, match confidence, integrate vs skip |
 
@@ -44,5 +44,6 @@ Living system design for EmailWatcher. Keep diagrams (Excalidraw) and prose (Mar
 
 | Date | Change |
 |---|---|
+| 2026-09-13 | Sync after Pre-filter stage added (PR #6): document new pre-filter step (bounces/non-delivery, out-of-office auto-replies discarded before classification), renumber pipeline stages, update processing-pipeline and quality-gate diagrams. |
 | 2026-09-13 | Sync after lookback change: document `timerange = 1 day`, Email Watcher + Design Sync automations, pipeline diagram fetch label. |
 | 2026-09-13 | Initial system-design space: overview, pipeline docs, four Excalidraw diagrams. |

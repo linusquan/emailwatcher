@@ -21,9 +21,23 @@ Diagram: [processing-pipeline.excalidraw](./diagrams/processing-pipeline.excalid
 - Capture: sender, subject, received time, body, links, attachment names/types, `webLink` / permalink.
 - **Deep read:** for anything that might be USEFUL, fetch the **full body** (previews truncate durable fields). Property/maintenance threads: read the conversation, not only the latest message.
 
-### 2. Quality gate
+### 2. Pre-filter
 
-Classify every email before any Notion write:
+Before classification, automatically discard messages that are never candidates for
+Notion ingestion — using sender, subject, and listing metadata only (no full-body fetch):
+
+- Bounce / non-delivery reports (`mailer-daemon@`, `postmaster@`, NDR).
+- Out-of-office / auto-replies with no transactional content.
+
+Pre-filtered mail is **not classified**, not deep-read, and never written to Notion. When
+a message might contain durable facts, it passes through to classification even if the
+sender looks automated — when in doubt, classify rather than pre-filter.
+
+Diagram: [processing-pipeline.excalidraw](./diagrams/processing-pipeline.excalidraw).
+
+### 3. Quality gate
+
+Classify every email that survives pre-filter before any Notion write:
 
 | Label | Notion write? |
 |---|---|
@@ -41,11 +55,11 @@ Rules of thumb:
 
 Diagram: [quality-gate.excalidraw](./diagrams/quality-gate.excalidraw).
 
-### 3. Attachments (USEFUL only)
+### 4. Attachments (USEFUL only)
 
 If USEFUL and attachments exist: download, open, and extract authoritative facts. Reporting Notion updates with `Attachments read: 0` for USEFUL mail that had attachments is a processing failure.
 
-### 4. Discover & route
+### 5. Discover & route
 
 1. Search Notion for `email inject` targets.
 2. Read candidates; match on subject, sender, entities, refs, semantic fit.
@@ -54,7 +68,7 @@ If USEFUL and attachments exist: download, open, and extract authoritative facts
 
 Diagram: [notion-routing.excalidraw](./diagrams/notion-routing.excalidraw).
 
-### 5. Integrate
+### 6. Integrate
 
 - Read the target page first.
 - Update records / dates / statuses; maintain tables; add actions when needed.
@@ -62,9 +76,10 @@ Diagram: [notion-routing.excalidraw](./diagrams/notion-routing.excalidraw).
 - Prefer newest authoritative values; keep history only when useful.
 - Light provenance: sender, date, subject, attachment name, reference, email link.
 
-### 6. Completion report
+### 7. Completion report
 
-Emit counts and outcomes per Emailer-Agent §15: scanned, useful / promotional / low-value / uncertain, attachments read, Notion updates, skips, duplicates, errors.
+Emit counts and outcomes per Emailer-Agent §17: scanned, pre-filtered, useful / promotional /
+low-value / uncertain, attachments read, Notion updates, skips, duplicates, errors.
 
 ---
 
@@ -72,6 +87,7 @@ Emit counts and outcomes per Emailer-Agent §15: scanned, useful / promotional /
 
 | Situation | Expected behavior |
 |---|---|
+| Bounce / auto-reply | Pre-filter — discard without classifying |
 | Uncertain durability | Skip write |
 | No `email inject` match | Skip write |
 | Weak keyword-only match | Skip write |

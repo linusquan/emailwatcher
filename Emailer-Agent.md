@@ -28,6 +28,42 @@ For each email inspect:
 
 Do not decide relevance from the subject line alone.
 
+### Deep read — required before any Notion write
+
+Listing or preview text alone is **not enough** to classify or extract knowledge.
+
+For every email that might be `USEFUL`, fetch and read the **full message body**
+before deciding what to write. Previews and snippets often truncate the fields
+that matter most (amounts, job titles, policy numbers, dates).
+
+This is **mandatory** when any of the following appear in the sender, subject,
+or preview — even if the subject looks generic (e.g. a property address only):
+
+* maintenance, repair, work order, invoice approved, completed job
+* quote, receipt, payment, statement, renewal, cancellation
+* lease, tenancy, rates, direct debit
+* insurance, policy, registration
+* attachment present on a property-manager, insurer, council, or tradie email
+
+**Example of why this matters:**
+
+> Subject: `Maintenance Notification: Invoice Approved for Completed Job at 21 Tori Street...`
+> Preview ends at: `Job Number`
+> Full body contains: `Job Title: front door install`, `Invoice Amount: $1,210.00`
+
+Without the full body, durable cost and work details are invisible.
+
+### Property and maintenance threads
+
+Emails about the same property often reuse generic subjects such as
+`21 Tori St, Box Hill NSW 2765` or `FW: 21 Tori St, Box Hill NSW 2765`.
+
+When a property address, managing agent, or maintenance provider appears:
+
+1. Read the **full thread or conversation**, not just the newest message.
+2. Follow forwards and replies — quotes and approvals may be in different messages.
+3. Do not assume one maintenance write-up covers all jobs at that address.
+
 ---
 
 # 2. Content Quality Gate — Apply Before Any Notion Write
@@ -181,6 +217,19 @@ For `USEFUL` emails with attachments:
 3. Do not rely only on the email body or filename.
 4. Extract durable information from the attachment.
 5. Preserve the attachment where useful as supporting evidence.
+
+**Attachments are not optional for ingestion.** If an email is classified
+`USEFUL` and has attachments, the run is incomplete until each attachment
+has been opened and checked for authoritative facts (amounts, dates,
+reference numbers, scope of work). Reporting `Attachments read: 0` while
+writing Notion updates from `USEFUL` mail is a processing failure.
+
+Priority attachment types for property and finance mail:
+
+* quotes and estimates (including tradie / agent forwards)
+* invoices and payment receipts
+* lease and tenancy documents
+* policy schedules, certificates, renewal packs
 
 Relevant attachment types can include:
 
@@ -478,36 +527,77 @@ False-positive insertion is worse than missing a low-value email.
 
 ---
 
-# 15. Completion Report
+# 15. Complete Useful-Queue Processing
+
+Classification alone is not completion. Every run must **write or explicitly
+skip** each email that is `USEFUL` and has a strong route to an eligible
+`email inject` page.
+
+Do **not**:
+
+* stop after the newest or easiest items
+* write only one maintenance row when multiple completed jobs exist
+* skip older `USEFUL` mail because the lookback window is large
+* treat “classified useful” as done without a Notion update or dedup match
+
+For each `USEFUL` email with a destination:
+
+1. Fetch full body (and attachments if present).
+2. Read the target Notion page.
+3. Check dedup identifiers (message ID, job number, invoice number, etc.).
+4. Integrate into the existing page structure, **or**
+5. Record as duplicate ignored with the matching identifier.
+
+The completion report must account for every routed `USEFUL` email:
+
+* **Written** — new or updated Notion content
+* **Duplicate ignored** — already present under the same identifier
+* **Skipped** — only when no eligible `email inject` target exists, or
+  confidence is genuinely insufficient after full body + attachment review
+
+A run that classifies dozens of useful property or insurance emails but
+updates Notion for only a recent subset is incomplete.
+
+---
+
+# 16. Completion Report
 
 After processing, return a concise report.
 
 Example:
 
 ```text
-Emails scanned: 34
+Emails scanned: 9146
 
-Useful: 5
-Promotional / spam: 18
-Low value: 8
-Uncertain / skipped: 3
+Useful (classified): 96
+Useful with Notion route: 59
+  - Written to Notion: 12
+  - Duplicates ignored: 37
+  - Skipped after full review: 10
 
-Attachments read: 4
+Promotional / spam: 1586
+Low value: 1514
+Uncertain: 5950
+
+Full bodies read (useful candidates): 59
+Attachments read: 8
 
 Notion updates:
+- Properties
+  - Added front door install — $1,210 (job 2607023873)
+  - Updated tenancy and council rates
 - Insurance Policies
   - Updated AAMI renewal premium
-  - Updated renewal date
-  - Attached renewal policy PDF
 
-Skipped examples:
+Skipped examples (promotional / low value):
 - AAMI multi-policy promotional offer
 - Qantas marketing newsletter
-- Amazon sale notification
-
-Duplicates ignored: 2
+- Amazon shipment notifications
 
 Errors: None
 ```
+
+Include **Useful with Notion route** and the written / duplicate / skipped
+breakdown so it is obvious when classified useful mail was not ingested.
 
 Do not include skipped promotional email content in Notion.

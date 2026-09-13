@@ -17,7 +17,7 @@ Diagram: [processing-pipeline.excalidraw](./diagrams/processing-pipeline.excalid
 
 ### 1. Fetch
 
-- Query each configured inbox for messages in the lookback window.
+- Query each configured inbox for messages in the lookback window (`timerange` in `emailwatcher.config`; currently **`1 day`**).
 - Capture: sender, subject, received time, body, links, attachment names/types, `webLink` / permalink.
 - **Deep read:** for anything that might be USEFUL, fetch the **full body** (previews truncate durable fields). Property/maintenance threads: read the conversation, not only the latest message.
 

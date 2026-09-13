@@ -11,7 +11,7 @@ automation should read first to find its settings.
 |---|---|
 | `README.md` | This file — index of settings and structure. |
 | `emailwatcher.config` | All run parameters (lookback window, inboxes). |
-| `Emailer-Agent.md` | Full behavior spec: classification rules, routing, dedup, reporting. |
+| `Emailer-Agent.md` | Full behavior spec: classification, deep-read rules, attachments, routing, dedup, complete useful-queue processing, reporting. |
 | `START.md` | Prompt to give the automation to kick off a run. |
 
 ## Run Parameters (`emailwatcher.config`)

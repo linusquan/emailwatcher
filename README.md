@@ -13,6 +13,7 @@ automation should read first to find its settings.
 | `emailwatcher.config` | All run parameters (lookback window, inboxes). |
 | `Emailer-Agent.md` | Full behavior spec: classification, deep-read rules, attachments, routing, dedup, complete useful-queue processing, reporting. |
 | `START.md` | Prompt to give the automation to kick off a run. |
+| `docs/system-design/` | Architecture overview, pipeline notes, and Excalidraw diagrams. |
 
 ## Run Parameters (`emailwatcher.config`)
 

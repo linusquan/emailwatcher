@@ -42,7 +42,7 @@ Keep these in sync with the repo and with each other:
 2. **Match reality** — Document instruction-driven Cursor automations + MCPs (Gmail, Outlook, Notion). Do not invent servers, queues, or databases not in the repo.
 3. **Do not change processing rules** — Do not edit `Emailer-Agent.md` classification, routing, dedup, or report rules as part of this sync.
 4. **Do not change run parameters** — Do not edit `emailwatcher.config` (`timerange`, `inboxes`).
-5. **Diagrams + prose together** — When behavior or config surface changes (e.g. lookback window), update both markdown and the relevant `.excalidraw` labels in the same PR.
+5. **Diagrams + prose together** — When behavior or config surface changes (e.g. lookback window), update both markdown and the relevant `.excalidraw` labels in the same PR. **Read and follow `.cursor/skills/excalidraw-diagram/SKILL.md` before editing any diagram** — edit Excalidraw `elements` JSON per that skill; do not treat `.excalidraw` files as opaque text or replace them with screenshots.
 6. **Changelog** — Add a dated row to the README changelog when you make substantive updates.
 7. **Open a PR, do not merge** — Create a follow-up PR on a `cursor/` branch; leave it for human review.
 
@@ -50,7 +50,7 @@ Keep these in sync with the repo and with each other:
 
 1. Confirm the merged diff is in scope (see “When to run”).
 2. Identify what changed (config values, new automations, pipeline steps, integrations).
-3. Update matching markdown and diagrams.
+3. Update matching markdown and diagrams. For each `.excalidraw` change, apply `.cursor/skills/excalidraw-diagram/SKILL.md` (surgical label/element edits, preserve layout and palette).
 4. Commit on `cursor/<descriptive-name>-<suffix>`, push, open PR against `main`.
 5. In the PR description, list which merge triggered the sync and what design artifacts changed.
 
@@ -58,3 +58,4 @@ Keep these in sync with the repo and with each other:
 
 - Operational detail: root `README.md`, `Emailer-Agent.md`, `emailwatcher.config`
 - Design space index: `docs/system-design/README.md`
+- Diagram editing: `.cursor/skills/excalidraw-diagram/SKILL.md` (required for all four `docs/system-design/diagrams/*.excalidraw` files)

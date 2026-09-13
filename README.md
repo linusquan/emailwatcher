@@ -41,3 +41,12 @@ See `Emailer-Agent.md` for full routing and write rules.
 3. Apply that logic to the configured inboxes for the configured window.
 
 See `START.md` for the prompt to kick off a run.
+
+## Cursor automations
+
+| Automation | Trigger | Role |
+|---|---|---|
+| **Email Watcher** | Scheduled | Process inboxes per `emailwatcher.config` and `Emailer-Agent.md` |
+| **Design Sync** | Pull request merged → `main` | Keep `docs/system-design/` aligned when behavior or architecture files change |
+
+Design Sync skips merges that only touch `docs/system-design/` to avoid update loops. It opens a follow-up PR but does not merge it.

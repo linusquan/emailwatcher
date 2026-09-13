@@ -25,7 +25,8 @@ See also: [system-context.excalidraw](./diagrams/system-context.excalidraw).
 
 | Component | Kind | Role |
 |---|---|---|
-| **Cursor automation** | Scheduler / runner | Triggers agent runs against the repo on a schedule |
+| **Email Watcher automation** | Scheduled runner | Processes inboxes per repo instructions on a schedule |
+| **Design Sync automation** | Merge-triggered runner | After merges to `main`, updates `docs/system-design/` when architecture/behavior files change |
 | **Agent run** | Ephemeral worker | Reads instructions, fetches mail, classifies, writes Notion, reports |
 | **`README.md`** | Entry index | Points the agent at config and behavior spec |
 | **`emailwatcher.config`** | Run parameters | `timerange`, `inboxes` |
@@ -76,7 +77,14 @@ Detail: [pipeline.md](./pipeline.md) and [processing-pipeline.excalidraw](./diag
 | Classification & routing | `Emailer-Agent.md` | Gate, attachments, Notion rules |
 | Eligible Notion pages | Notion metadata | Tag/property/text `email inject` |
 
-Operational snapshot of current values: [project-context.md](../project-context.md).
+### Current run parameters (`emailwatcher.config`)
+
+| Key | Current value |
+|---|---|
+| `timerange` | `1 day` |
+| `inboxes` | `liquansyd@gmail.com`, `liquan1992@outlook.com` |
+
+The fetch stage only retrieves messages received within this lookback window (changed from `1 year` to `1 day` in PR #2).
 
 ---
 

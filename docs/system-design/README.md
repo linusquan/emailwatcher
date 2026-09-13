@@ -44,4 +44,5 @@ Living system design for EmailWatcher. Keep diagrams (Excalidraw) and prose (Mar
 
 | Date | Change |
 |---|---|
+| 2026-09-13 | Sync after lookback change: document `timerange = 1 day`, Email Watcher + Design Sync automations, pipeline diagram fetch label. |
 | 2026-09-13 | Initial system-design space: overview, pipeline docs, four Excalidraw diagrams. |

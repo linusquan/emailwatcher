@@ -14,7 +14,6 @@ Use when a merge to `main` may have changed how EmailWatcher works or is structu
 - `Emailer-Agent.md`
 - `emailwatcher.config`
 - `README.md`
-- `START.md`
 - Application code (if any is added later)
 
 **Do nothing** (prevent loops) when:

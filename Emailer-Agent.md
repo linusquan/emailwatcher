@@ -161,6 +161,7 @@ Examples:
 * duplicated notifications
 * repeated emails containing no new information
 * boilerplate correspondence
+* package or shipping tracking updates with no delay, exception, or delivery problem
 
 These should not pollute the knowledge base.
 

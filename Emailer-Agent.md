@@ -12,19 +12,6 @@ Marketing, promotional content, newsletters, generic announcements, and low-valu
 
 ---
 
-## Processing pipeline
-
-Each run follows this order:
-
-1. **Fetch** — load messages in the configured lookback window.
-2. **Pre-filter** — discard auto-replies and delivery noise **before** classification.
-3. **Classify** — quality gate (`USEFUL` / `PROMOTIONAL` / `LOW_VALUE` / `UNCERTAIN`).
-4. **Deep read & attachments** — for `USEFUL` candidates only.
-5. **Route & integrate** — match `email inject` targets, deduplicate, write Notion.
-6. **Report** — counts and outcomes for the full run.
-
----
-
 ## 1. Fetch Emails
 
 Read emails from the inboxes listed in `emailwatcher.config`, received within the configured lookback window.
@@ -79,36 +66,7 @@ When a property address, managing agent, or maintenance provider appears:
 
 ---
 
-# 2. Pre-filter — Auto-replies and delivery noise
-
-After fetch and **before** the quality gate, automatically discard messages that
-are never candidates for Notion ingestion.
-
-Pre-filtered mail is **not classified** — it does not receive a
-`USEFUL` / `PROMOTIONAL` / `LOW_VALUE` / `UNCERTAIN` label, is not deep-read,
-and is never written to Notion.
-
-## Always pre-filter (discard without classifying)
-
-Use sender, subject, and listing metadata only — **do not** fetch the full body
-for pre-filtered messages.
-
-* **Bounce / non-delivery** — e.g. `mailer-daemon@`, `postmaster@`, subjects
-  or bodies indicating undeliverable, delivery failure, returned mail, or
-  non-delivery report (NDR).
-* **Out-of-office / auto-replies** — automatic replies, vacation responders,
-  away messages, and similar system-generated acknowledgements with no
-  transactional content.
-
-## Do not pre-filter
-
-When a message might contain durable facts (invoice, renewal, maintenance,
-policy change, payment confirmation), **pass it through** to classification even
-if the sender looks automated. When in doubt, classify — do not pre-filter.
-
----
-
-# 3. Content Quality Gate — Apply Before Any Notion Write
+# 2. Content Quality Gate — Apply Before Any Notion Write
 
 Before processing an email further, classify it as one of:
 
@@ -219,7 +177,7 @@ Prefer skipping it over injecting questionable content.
 
 ---
 
-# 4. Transactional Content Beats Marketing Content
+# 3. Transactional Content Beats Marketing Content
 
 Some emails contain both useful and promotional content.
 
@@ -251,7 +209,7 @@ Never copy marketing boilerplate simply because it appears inside an otherwise u
 
 ---
 
-# 5. Read Attachments
+# 4. Read Attachments
 
 For `USEFUL` emails with attachments:
 
@@ -293,7 +251,7 @@ If an email looks promotional but contains an attached authoritative document, i
 
 ---
 
-# 6. Discover Notion Injection Targets
+# 5. Discover Notion Injection Targets
 
 Search Notion for pages/documents intended to receive email-derived information.
 
@@ -315,7 +273,7 @@ Do not automatically write email content into arbitrary Notion pages.
 
 ---
 
-# 7. Route the Email to the Correct Document
+# 6. Route the Email to the Correct Document
 
 For every `USEFUL` email:
 
@@ -360,7 +318,7 @@ If no existing `email inject` document is a strong match:
 
 ---
 
-# 8. High Confidence Required Before Writing
+# 7. High Confidence Required Before Writing
 
 Writing to Notion requires a strong match between:
 
@@ -390,7 +348,7 @@ clearly belongs there.
 
 ---
 
-# 9. Update Existing Knowledge, Do Not Dump Emails
+# 8. Update Existing Knowledge, Do Not Dump Emails
 
 Before modifying an eligible target page:
 
@@ -423,7 +381,7 @@ The result should look like a maintained knowledge document.
 
 ---
 
-# 10. Deduplication
+# 9. Deduplication
 
 The workflow may run repeatedly.
 
@@ -449,7 +407,7 @@ If an email contains newer information for an existing record, update the record
 
 ---
 
-# 11. Prefer New Authoritative Information
+# 10. Prefer New Authoritative Information
 
 If newer authoritative information conflicts with existing information:
 
@@ -472,7 +430,7 @@ Retain historical values only when they provide useful comparison or audit histo
 
 ---
 
-# 12. Preserve Source Traceability
+# 11. Preserve Source Traceability
 
 Important extracted knowledge should retain lightweight provenance.
 
@@ -499,7 +457,7 @@ The knowledge itself is more important than the email envelope.
 
 ---
 
-# 13. Attachment Handling
+# 12. Attachment Handling
 
 If an attachment is useful:
 
@@ -513,7 +471,7 @@ Do NOT store promotional brochures or generic marketing PDFs.
 
 ---
 
-# 14. Notion Cleanliness Rule
+# 13. Notion Cleanliness Rule
 
 The knowledge base must stay high-signal.
 
@@ -542,7 +500,7 @@ you can save 10% when you...
 
 ---
 
-# 15. Conservative Filtering
+# 14. Conservative Filtering
 
 When deciding between:
 
@@ -570,7 +528,7 @@ False-positive insertion is worse than missing a low-value email.
 
 ---
 
-# 16. Complete Useful-Queue Processing
+# 15. Complete Useful-Queue Processing
 
 Classification alone is not completion. Every run must **write or explicitly
 skip** each email that is `USEFUL` and has a strong route to an eligible
@@ -603,20 +561,14 @@ updates Notion for only a recent subset is incomplete.
 
 ---
 
-# 17. Completion Report
+# 16. Completion Report
 
 After processing, return a concise report.
-
-**Emails scanned** is every message fetched in the lookback window.
-**Pre-filtered** is mail discarded in §2 without classification. All other
-counts (useful, promotional, low value, uncertain) apply only to mail that
-passed pre-filter.
 
 Example:
 
 ```text
 Emails scanned: 9146
-Pre-filtered (auto-replies / bounces): 142
 
 Useful (classified): 96
 Useful with Notion route: 59
@@ -643,15 +595,10 @@ Skipped examples (promotional / low value):
 - Qantas marketing newsletter
 - Amazon shipment notifications
 
-Pre-filtered examples (not classified):
-- Mailer-daemon non-delivery report
-- Out-of-office automatic reply
-
 Errors: None
 ```
 
-Include **Pre-filtered**, **Useful with Notion route**, and the written /
-duplicate / skipped breakdown so it is obvious when mail left the pipeline
-before classification and when classified useful mail was not ingested.
+Include **Useful with Notion route** and the written / duplicate / skipped
+breakdown so it is obvious when classified useful mail was not ingested.
 
 Do not include skipped promotional email content in Notion.

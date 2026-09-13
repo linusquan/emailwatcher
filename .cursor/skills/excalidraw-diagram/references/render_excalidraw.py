@@ -126,11 +126,18 @@ def render(
         try:
             browser = p.chromium.launch(headless=True)
         except Exception as e:
-            if "Executable doesn't exist" in str(e) or "browserType.launch" in str(e):
-                print("ERROR: Chromium not installed for Playwright.", file=sys.stderr)
-                print("Run: cd .claude/skills/excalidraw-diagram/references && uv run playwright install chromium", file=sys.stderr)
-                sys.exit(1)
-            raise
+            # Playwright's bundled Chromium doesn't ship builds for some older
+            # OS versions (e.g. macOS Monterey). Fall back to the system-installed
+            # Google Chrome via Playwright's "chrome" channel before giving up.
+            try:
+                browser = p.chromium.launch(headless=True, channel="chrome")
+            except Exception:
+                if "Executable doesn't exist" in str(e) or "browserType.launch" in str(e):
+                    print("ERROR: Chromium not installed for Playwright, and no system Chrome found.", file=sys.stderr)
+                    print("Run: cd .claude/skills/excalidraw-diagram/references && uv run playwright install chromium", file=sys.stderr)
+                    print("Or install Google Chrome (https://www.google.com/chrome/) for the fallback path.", file=sys.stderr)
+                    sys.exit(1)
+                raise
 
         page = browser.new_page(
             viewport={"width": vp_width, "height": vp_height},

@@ -11,7 +11,8 @@ Use when a merge to `main` may have changed how EmailWatcher works or is structu
 
 **Update** when the merged PR touched any of:
 
-- `Emailer-Agent.md`
+- `index.md`
+- `rules/*.md`
 - `emailwatcher.config`
 - `README.md`
 - Application code (if any is added later)
@@ -35,12 +36,14 @@ Keep these in sync with the repo and with each other:
 | Quality gate diagram | `docs/system-design/diagrams/quality-gate.excalidraw` |
 | Notion routing diagram | `docs/system-design/diagrams/notion-routing.excalidraw` |
 
+Use `excalidraw-diagram` skill to improve the diagramming.
+
 ## Rules
 
-1. **Read first** — `README.md`, `emailwatcher.config`, `Emailer-Agent.md`, and existing `docs/system-design/` before editing.
+1. **Read first** — `README.md`, `emailwatcher.config`, `index.md`, all `rules/*.md`, and existing `docs/system-design/` before editing.
 2. **Match reality** — Document instruction-driven Cursor automations + MCPs (Gmail, Outlook, Notion). Do not invent servers, queues, or databases not in the repo.
-3. **Do not change processing rules** — Do not edit `Emailer-Agent.md` classification, routing, dedup, or report rules as part of this sync.
-4. **Do not change run parameters** — Do not edit `emailwatcher.config` (`timerange`, `inboxes`).
+3. **Do not change processing rules** — Do not edit `index.md` or `rules/*.md` classification, routing, dedup, or report rules as part of this sync.
+4. **Do not change run parameters** — Do not edit `emailwatcher.config` (`timerange`, `inboxes`, `pinned_sender`).
 5. **Diagrams + prose together** — When behavior or config surface changes (e.g. lookback window), update both markdown and the relevant `.excalidraw` labels in the same PR.
 6. **Changelog** — Add a dated row to the README changelog when you make substantive updates.
 7. **Open a PR, do not merge** — Create a follow-up PR on a `cursor/` branch; leave it for human review.
@@ -55,5 +58,5 @@ Keep these in sync with the repo and with each other:
 
 ## Reference
 
-- Operational detail: root `README.md`, `Emailer-Agent.md`, `emailwatcher.config`
+- Operational detail: root `README.md`, `index.md`, `rules/*.md`, `emailwatcher.config`
 - Design space index: `docs/system-design/README.md`

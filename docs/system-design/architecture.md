@@ -30,7 +30,8 @@ See also: [system-context.excalidraw](./diagrams/system-context.excalidraw).
 | **Agent run** | Ephemeral worker | Reads instructions, fetches mail, classifies, writes Notion, reports |
 | **`README.md`** | Entry index | Points the agent at config and behavior spec |
 | **`emailwatcher.config`** | Run parameters | `timerange`, `inboxes` |
-| **`Emailer-Agent.md`** | Behavior spec | Classification, attachments, routing, dedup, report format |
+| **`index.md`** | Behavior spine | Goal, pipeline order, global cleanliness / conservative-filtering rules, links to `rules/` |
+| **`rules/*.md`** | Behavior spec | Six stage files: fetch, pre-filter, classify, attachments, route & write, report |
 | **`START.md`** | Kickoff prompt | Canonical automation start text |
 | **Gmail MCP** | Email source | Inbox `liquansyd@gmail.com` |
 | **Outlook MCP** | Email source | Inbox `liquan1992@outlook.com` |
@@ -46,9 +47,10 @@ There is **no** custom app runtime, database, or message queue in-repo. Persiste
 |---|---|
 | Config | Always from repo files — never baked automation defaults |
 | Ingress | Only listed inboxes; only messages inside `timerange` |
+| Pinned senders | `pinned_sender` addresses bypass pre-filter + quality gate and route to the `email inject` page claiming them via `email from`; only an unclaimed sender may block the write |
 | Pre-filter | Bounces / non-delivery / auto-replies discarded before classification; never deep-read, never written |
-| Classification | Must complete before any Notion write |
-| Egress | Only `USEFUL` → Notion; PROMOTIONAL / LOW_VALUE / UNCERTAIN → no write |
+| Classification | Must complete before any Notion write, unless the sender is pinned |
+| Egress | Only `USEFUL` (or pinned) → Notion; PROMOTIONAL / LOW_VALUE / UNCERTAIN → no write |
 | Targets | Only Notion pages with `email inject` marker |
 | Routing | High-confidence document match required; weak keyword match → skip |
 | Content | Integrate into existing structure; strip marketing / boilerplate |
@@ -57,14 +59,14 @@ There is **no** custom app runtime, database, or message queue in-repo. Persiste
 
 ## Data flow (logical)
 
-1. **Load** — README → config → Emailer-Agent rules.
+1. **Load** — README → config → `index.md` → all `rules/*.md`.
 2. **Fetch** — per inbox, messages in lookback window (full body when possibly useful).
 3. **Pre-filter** — discard bounces/non-delivery and out-of-office auto-replies before classification (metadata only, no full-body fetch, never written to Notion).
 4. **Classify** — quality gate labels each remaining message.
 5. **Enrich** — for USEFUL: attachments, thread context where required (e.g. property/maintenance).
 6. **Route** — discover `email inject` targets; pick best strong match or skip.
 7. **Integrate** — dedupe, prefer newest authoritative values, record light provenance.
-8. **Report** — completion report per Emailer-Agent §17.
+8. **Report** — completion report per `rules/06-report.md`.
 
 Detail: [pipeline.md](./pipeline.md) and [processing-pipeline.excalidraw](./diagrams/processing-pipeline.excalidraw).
 
@@ -76,17 +78,20 @@ Detail: [pipeline.md](./pipeline.md) and [processing-pipeline.excalidraw](./diag
 |---|---|---|
 | `timerange` | `emailwatcher.config` | Lookback window for fetch |
 | `inboxes` | `emailwatcher.config` | Allowed mailbox addresses |
-| Classification & routing | `Emailer-Agent.md` | Gate, attachments, Notion rules |
+| `pinned_sender` | `emailwatcher.config` | Always-useful sender addresses (no destinations) |
+| Pinned destinations | Notion metadata | `email from: <address>` on an `email inject` page |
+| Classification & routing | `rules/03-classify.md`, `rules/05-route-and-write.md` | Gate, attachments, Notion rules |
 | Eligible Notion pages | Notion metadata | Tag/property/text `email inject` |
 
 ### Current run parameters (`emailwatcher.config`)
 
 | Key | Current value |
 |---|---|
-| `timerange` | `1 day` |
+| `timerange` | `3 day` |
 | `inboxes` | `liquansyd@gmail.com`, `liquan1992@outlook.com` |
+| `pinned_sender` | `money_or_life@creator.patreon.com` |
 
-The fetch stage only retrieves messages received within this lookback window (changed from `1 year` to `1 day` in PR #2).
+The fetch stage only retrieves messages received within this lookback window (`1 year` → `1 day` in PR #2; widened to `3 day` since).
 
 ---
 

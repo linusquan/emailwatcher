@@ -1,6 +1,6 @@
 # Processing pipeline
 
-Canonical run flow for a scheduled EmailWatcher agent. Aligns with `Emailer-Agent.md` and [project-context.md](../project-context.md).
+Canonical run flow for a scheduled EmailWatcher agent. Aligns with `index.md` + `rules/` and [project-context.md](../project-context.md).
 
 Diagram: [processing-pipeline.excalidraw](./diagrams/processing-pipeline.excalidraw).
 
@@ -12,14 +12,28 @@ Diagram: [processing-pipeline.excalidraw](./diagrams/processing-pipeline.excalid
 
 1. Read `README.md`.
 2. Load `emailwatcher.config` (`timerange`, `inboxes`).
-3. Load `Emailer-Agent.md` (full rules).
+3. Load `index.md` **and every file under `rules/`** (full rules).
 4. Do **not** use defaults from the automation prompt.
 
 ### 1. Fetch
 
-- Query each configured inbox for messages in the lookback window (`timerange` in `emailwatcher.config`; currently **`1 day`**).
+- Query each configured inbox for messages in the lookback window (`timerange` in `emailwatcher.config`; currently **`3 day`**).
 - Capture: sender, subject, received time, body, links, attachment names/types, `webLink` / permalink.
 - **Deep read:** for anything that might be USEFUL, fetch the **full body** (previews truncate durable fields). Property/maintenance threads: read the conversation, not only the latest message.
+
+### 1b. Pinned-sender bypass
+
+Mail whose sender matches a `pinned_sender` entry in `emailwatcher.config` leaves the
+normal path here. It skips pre-filter (except genuine NDRs) and the quality gate, is
+treated as USEFUL, and routes to whichever `email inject` page claims the sender with an
+`email from` marker.
+
+Config holds addresses only — no Notion page names live in the repo. The six-month test
+and conservative filtering do **not** apply. Deduplication, deep read, attachment
+extraction, and integrate-don't-dump do. The only sanctioned non-write outcome is "no page
+claims this sender", reported as an action item; two claiming pages is an error.
+
+Rules: `rules/00-pinned-senders.md`.
 
 ### 2. Pre-filter
 
@@ -78,7 +92,7 @@ Diagram: [notion-routing.excalidraw](./diagrams/notion-routing.excalidraw).
 
 ### 7. Completion report
 
-Emit counts and outcomes per Emailer-Agent §17: scanned, pre-filtered, useful / promotional /
+Emit counts and outcomes per `rules/06-report.md`: scanned, pre-filtered, useful / promotional /
 low-value / uncertain, attachments read, Notion updates, skips, duplicates, errors.
 
 ---
@@ -87,6 +101,9 @@ low-value / uncertain, attachments read, Notion updates, skips, duplicates, erro
 
 | Situation | Expected behavior |
 |---|---|
+| Pinned sender, claimed by a page | Always write (dedup still applies) |
+| Pinned sender, unclaimed | Skip + report as action item — the only sanctioned pinned skip |
+| Pinned sender, claimed by 2+ pages | Do not write — report under `Errors` |
 | Bounce / auto-reply | Pre-filter — discard without classifying |
 | Uncertain durability | Skip write |
 | No `email inject` match | Skip write |

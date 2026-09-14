@@ -80,6 +80,25 @@ Car registration renewal
 → Vehicle document
 ```
 
+```text
+Receipt, tax invoice, subscription charge, or device purchase confirmation
+→ Tax Deductions
+```
+
+Only when the `email inject` page **Tax Deductions** exists and the email is a
+clear tax-deduction **candidate** (see [03-classify.md](./03-classify.md)). Write
+extracted purchase facts into the existing table or structure — status as
+candidate, not as a decided deduction. Do not add tax advice or deductibility
+claims to Notion.
+
+If no `email inject` page clearly matches tax, deductions, expenses,
+subscriptions, or devices:
+
+**do not invent a dump page** — skip Notion and note in the completion report
+that no eligible destination was found.
+
+---
+
 If no existing `email inject` document is a strong match:
 
 **do not inject the content into an unrelated document.**

@@ -31,7 +31,11 @@ or preview — even if the subject looks generic (e.g. a property address only):
 * quote, receipt, payment, statement, renewal, cancellation
 * lease, tenancy, rates, direct debit
 * insurance, policy, registration
+* tax invoice, purchase confirmation, subscription charge or renewal, order
+  confirmation for devices or hardware
 * attachment present on a property-manager, insurer, council, or tradie email
+* attachment that may be a receipt or invoice (PDF, image) on a merchant or
+  subscription email
 
 **Example of why this matters:**
 

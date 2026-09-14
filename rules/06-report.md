@@ -80,6 +80,8 @@ Notion updates:
   - Updated tenancy and council rates
 - Insurance Policies
   - Updated AAMI renewal premium
+- Tax Deductions
+  - Added Cursor Pro annual charge candidate — A$240, 14 Sep 2026
 - Patreon Creator Updates
   - Added 3 creator updates (money_or_life@creator.patreon.com)
 

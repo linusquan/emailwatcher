@@ -32,7 +32,7 @@ Each run follows this order:
 | 3 | **Classify** — quality gate (`USEFUL` / `PROMOTIONAL` / `LOW_VALUE` / `UNCERTAIN`) | [rules/03-classify.md](./rules/03-classify.md) |
 | 4 | **Attachments** — open and extract, for `USEFUL` candidates only | [rules/04-attachments.md](./rules/04-attachments.md) |
 | 5 | **Route & integrate** — match `email inject` targets, deduplicate, write Notion | [rules/05-route-and-write.md](./rules/05-route-and-write.md) |
-| 6 | **Report** — complete the useful queue, then report counts and outcomes | [rules/06-report.md](./rules/06-report.md) |
+| 6 | **Report** — complete the useful queue, then report counts and outcomes to chat **and** the `report_page` Notion page | [rules/06-report.md](./rules/06-report.md) |
 
 ---
 

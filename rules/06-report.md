@@ -96,11 +96,50 @@ Pre-filtered examples (not classified):
 - Mailer-daemon non-delivery report
 - Out-of-office automatic reply
 
+Run log: prepended to News Update Summary
+
 Errors: None
 ```
 
-Include **Pre-filtered**, **Useful with Notion route**, and the written /
-duplicate / skipped breakdown so it is obvious when mail left the pipeline
-before classification and when classified useful mail was not ingested.
+Include **Pre-filtered**, **Useful with Notion route**, the written /
+duplicate / skipped breakdown, and a **Run log** line so it is obvious when
+mail left the pipeline before classification, when classified useful mail was
+not ingested, and whether this report was prepended to `report_page`.
 
 Do not include skipped promotional email content in Notion.
+
+---
+
+## Publish the completion report to Notion
+
+The chat reply is not enough. After the completion report is assembled, write
+the **same report** to the Notion page named in `report_page`
+(`emailwatcher.config`). That is how the user receives the update after the
+job finishes.
+
+This page is a **run log**, not an `email inject` destination. Do not route
+email bodies here. Do not apply the six-month test. Do not require an
+`email inject` marker. Email knowledge still goes only to `email inject`
+pages per [05-route-and-write.md](./05-route-and-write.md).
+
+1. Search Notion for a page whose title matches `report_page` **exactly**.
+   Ignore emoji in the page icon; match the title text.
+2. Read the existing page first.
+3. **Prepend** a dated heading and the full completion report (same format as
+   the chat report). Newest run at the top. Leave prior runs intact. Do not
+   replace the whole page.
+4. If two pages share that exact title, do not guess — report under `Errors`.
+5. If no page matches, do not create one. Report under `Errors` as an action
+   item: create or rename the page to match `report_page`.
+
+Heading format:
+
+```text
+## Run — 14 Sep 2026 21:31 AEST
+```
+
+Use the user's local timezone when known; otherwise UTC with the offset
+labeled.
+
+A run that only prints the report in chat, or that skips this Notion write
+because the page was not found, is incomplete. Note the miss under `Errors`.

@@ -10,7 +10,7 @@ automation should read first to find its settings.
 | File | Purpose |
 |---|---|
 | `README.md` | This file — index of settings and structure. |
-| `emailwatcher.config` | All run parameters (lookback window, inboxes). |
+| `emailwatcher.config` | All run parameters (lookback window, inboxes, pinned senders, report page). |
 | `index.md` | Behavior spine: goal, pipeline order, global rules, links into `rules/`. |
 | `rules/*.md` | Full behavior spec, one file per pipeline stage (see below). |
 | `START.md` | Prompt to give the automation to kick off a run. |
@@ -25,6 +25,7 @@ Plain text, `key = value` per line.
 | `timerange` | `<number> <unit>` | `1 day`, `1 week`, `1 month`, `1 year` |
 | `inboxes` | comma-separated email addresses | `a@example.com, b@example.com` |
 | `pinned_sender` | one email address, repeatable | `x@example.com` |
+| `report_page` | exact Notion page title | `News Update Summary` |
 
 ### Pinned senders
 
@@ -33,8 +34,9 @@ pre-filter and the quality gate, and is exempt from the six-month test and
 conservative filtering — newsletter-shaped content is expected and accepted.
 
 The config says **which senders matter**; Notion says **where their mail goes**.
-No Notion page names live in this repo. A destination page claims a sender by
-carrying an `email from` marker next to its `email inject` marker:
+No **email-destination** page names live in this repo (`report_page` is the
+run log only). A destination page claims a sender by carrying an `email from`
+marker next to its `email inject` marker:
 
 ```text
 Tags: email inject
@@ -56,8 +58,15 @@ Current values: see `emailwatcher.config`.
 
 ### Destination store
 
-Notion — only pages/databases tagged `email inject` are eligible targets.
-See `rules/05-route-and-write.md` for full routing and write rules.
+Notion — only pages/databases tagged `email inject` are eligible targets for
+**email knowledge**. See `rules/05-route-and-write.md` for full routing and
+write rules.
+
+`report_page` is the one page title allowed in this repo. It is a **run log**,
+not an email destination: after every completed job, the agent prepends the
+completion report there so the update is waiting in Notion. Email destinations
+still must not be named here — they are claimed in Notion via `email inject`
+and `email from` markers.
 
 ## Behavior spec (`index.md` + `rules/`)
 
@@ -72,11 +81,11 @@ file under `rules/` before processing mail.
 | `rules/03-classify.md` | Quality gate; transactional beats marketing |
 | `rules/04-attachments.md` | Open attachments; handling in Notion |
 | `rules/05-route-and-write.md` | `email inject` targets, confidence, integrate, dedup, provenance |
-| `rules/06-report.md` | Complete the useful queue; completion report format |
+| `rules/06-report.md` | Complete the useful queue; completion report in chat **and** on `report_page` |
 
 ## How the automation should use this
 
-1. Read `emailwatcher.config` for the lookback window and inboxes.
+1. Read `emailwatcher.config` for the lookback window, inboxes, pinned senders, and report page.
 2. Read `index.md`, then every file under `rules/`, for the full processing/classification/routing logic.
 3. Apply that logic to the configured inboxes for the configured window.
 

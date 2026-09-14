@@ -20,8 +20,10 @@ pattern. If the address does not match exactly, the message is ordinary mail and
 goes through the normal pipeline.
 
 The config says **which senders matter**. It does not say where their mail goes —
-the repo has no knowledge of Notion page names, and must not acquire any.
-Destinations are declared in Notion, by the destination itself.
+the repo has no knowledge of **email-destination** Notion page names, and must
+not acquire any. Destinations are declared in Notion, by the destination itself.
+The only page title allowed in config is `report_page`, which is the run log
+(see [06-report.md](./06-report.md)), not an email inject target.
 
 ## Where the destination comes from
 

@@ -4,11 +4,12 @@ To kick off a run, prompt the automation with:
 
 ```text
 Read README.md in this repo. Load run parameters from emailwatcher.config
-(timerange, inboxes, pinned_sender), then read index.md and every file under rules/ for the
+(timerange, inboxes, pinned_sender, report_page), then read index.md and every file under rules/ for the
 full processing/classification/routing rules. index.md is only a spine — the
 rules/ files are mandatory, not optional reference. Then process the
 configured inboxes for the configured lookback window and report results per
-the Completion Report format in rules/06-report.md.
+the Completion Report format in rules/06-report.md. A run is not complete until
+the same report is written to the Notion page named in report_page.
 ```
 
 The automation must not skip step 1 — settings and rules always come from

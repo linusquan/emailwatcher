@@ -51,6 +51,52 @@ Example:
 
 → `USEFUL`
 
+### Tax deduction candidates
+
+Treat as `USEFUL` when the email or its attachments contain **factual purchase or
+charge records** that may be relevant for tax record-keeping — not when it is
+only marketing.
+
+**Ingest (extract facts only):**
+
+* invoices and receipts (including PDF/image attachments)
+* subscription renewal or charge confirmations (amount, vendor, billing period)
+* device or hardware purchase confirmations and tax invoices
+* payment confirmations that include what was bought, when, and for how much
+
+**Extract and record as candidates — do not decide deductibility:**
+
+* amount (and currency)
+* vendor / merchant
+* purchase or charge date
+* description of what was bought or subscribed to
+* payment method, when stated
+* invoice or order number, when present
+
+**Do not give tax advice.** Do not assert that something is deductible, claim a
+deduction percentage, or recommend a tax treatment. Record extracted facts as
+**tax-deduction candidates** for the user to review at tax time.
+
+**Classify as `PROMOTIONAL` (not ingest):** sales pitches, discount offers,
+unused coupon codes, "save on your next purchase", upsell campaigns — even when
+they mention subscriptions or devices.
+
+**Classify as `UNCERTAIN` (skip Notion):** the email might be purchase-related
+but lacks enough facts to record a candidate (no amount, no clear vendor, no
+date, or only a vague "your order" with no detail). Prefer skip over guessing.
+
+Example:
+
+> Apple tax invoice for Magic Trackpad — A$179, order W1540167101, 26 Aug 2026.
+
+→ `USEFUL` (tax-deduction candidate — record facts, not deductibility)
+
+Example:
+
+> "Renew Cursor Pro today and save 20% on your annual plan!"
+
+→ `PROMOTIONAL`
+
 ---
 
 ## PROMOTIONAL

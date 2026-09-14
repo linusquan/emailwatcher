@@ -25,6 +25,12 @@ Priority attachment types for property and finance mail:
 * lease and tenancy documents
 * policy schedules, certificates, renewal packs
 
+Priority attachment types for tax-deduction **candidates**:
+
+* tax invoices and purchase receipts (PDF or image)
+* subscription charge or renewal documents
+* device or hardware order confirmations with line items and amounts
+
 Relevant attachment types can include:
 
 * PDF
